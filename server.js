@@ -3,11 +3,14 @@ const db = require('./db');
 require("dotenv").config();
 
 const userRoute = require("./routes/userRoutes")
+const feedRoute = require("./routes/feedsRoutes")
 
 const app = express()
 app.use(express.json())
 
 app.use("/api", userRoute)
+app.use("/api", feedRoute)
+
 
 const PORT = process.env.PORT || "8080";
 //
@@ -15,8 +18,8 @@ const PORT = process.env.PORT || "8080";
 // db.run("DROP TABLE feed")
 
 
-db.run(`CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, name TEXT, roll TEXT, email TEXT, password TEXT)`);
-db.run(`CREATE TABLE IF NOT EXISTS feed (id INT, name TEXT, url TEXT, description TEXT)`);
+db.run(`CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY UNIQUE, name TEXT, roll TEXT, email TEXT, password TEXT)`);
+db.run(`CREATE TABLE IF NOT EXISTS feed (id INTEGER PRIMARY KEY UNIQUE, name TEXT, url TEXT, description TEXT)`);
 
 //INSERT SUPER ADMIN
 // db.run(`INSERT INTO users (id, name, roll, email, password) VALUES (1, 'veekshith', 'super-admin', 'veekshith@gmail.com', '12345')`);

@@ -3,12 +3,10 @@ const db = require("../db");
 const createFeed = async (req, res) => {
     try {
         const { id, name, url, description } = req.query
-        // console.log(req.query)
-
         // Checking for super-admin and admin
-        // if (req.user.role !== 'super-admin' && req.user.role !== 'admin') {
-        //     return res.status(403).json({ message: 'Permission denied.' });
-        // }
+        if (req.auth.role !== 'super-admin' && req.auth.role !== 'admin') {
+            return res.status(403).json({ message: 'Permission denied.' });
+        }
 
         if (id && name && url && description) {
             db.run(`INSERT INTO feed (id , name , url , description) VALUES (?,?,?,?)`, [id, name, url, description], (err) => {
@@ -31,10 +29,9 @@ const editFeed = async (req, res) => {
         const { name, url, description } = req.query
         const { id } = req.params
 
-        // if (req.user.role !== 'super-admin' && req.user.role !== 'admin') {
-        //     return res.status(403).json({ message: 'Permission denied.' });
-        // }
-
+        if (req.auth.role !== 'super-admin' && req.auth.role !== 'admin') {
+            return res.status(403).json({ message: 'Permission denied.' });
+        }
 
         //Validation
         if (!name || !url || !description) {
@@ -62,9 +59,9 @@ const deletFeed = (req, res) => {
         const { id } = req.params
         const feedId = id
 
-        // if (req.user.role !== 'super-admin' && req.user.role !== 'admin') {
-        //     return res.status(403).json({ message: 'Permission denied.' });
-        // }
+        if (req.auth.role !== 'super-admin' && req.auth.role !== 'admin') {
+            return res.status(403).json({ message: 'Permission denied.' });
+        }
 
         if (!feedId) {
             return res.status(400).json({ error: 'Invalid feed ID' });

@@ -3,12 +3,11 @@ const { authenticateToken } = require("../middleware/authentication")
 
 const route = require("express").Router()
 
-route.post("/user", createUser)
-route.put("/user/:id", editUser)
-route.delete("/user/:id", deletUser)
+route.post("/user", authenticateToken, createUser)
+route.put("/user/:id", authenticateToken, editUser)
+route.delete("/user/:id", authenticateToken, deletUser)
 
 
 route.get("/users", authenticateToken, getAllUser)
-route.post("/login", userLogin)
 
 module.exports = route

@@ -6,9 +6,10 @@ const authenticateToken = (req, res, next) => {
     if (!token) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
-    jwt.verify(token, process.env.ACCESS_TOKEN_KEY, (err, user) => {
+    jwt.verify(token, process.env.ACCESS_TOKEN_KEY, (err, data) => {
+        console.log("authdata", data)
         if (err) return res.status(403).json({ message: 'Forbidden' });
-        req.user = user;
+        req.auth = data;
     })
     next()
 }

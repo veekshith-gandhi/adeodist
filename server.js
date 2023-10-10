@@ -4,12 +4,15 @@ require("dotenv").config();
 
 const userRoute = require("./routes/userRoutes")
 const feedRoute = require("./routes/feedsRoutes")
+const authRoute = require("./routes/authRoutes")
 
 const app = express()
 app.use(express.json())
 
 app.use("/api", userRoute)
 app.use("/api", feedRoute)
+app.use("/api", authRoute)
+
 
 
 const PORT = process.env.PORT || "8080";

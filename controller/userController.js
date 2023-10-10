@@ -3,10 +3,11 @@ const jwt = require('jsonwebtoken');
 
 const createUser = (req, res) => {
 
-    // const authenticatedUser = req.user;
-    // if (authenticatedUser.role !== 'super-admin') {
-    //     return res.status(403).json({ error: 'Access denied. Only super-admin can create users.' });
-    // }
+    const authenticatedUser = req.auth;
+    console.log("authenticatedUser", authenticatedUser)
+    if (authenticatedUser.roll !== 'super-admin') {
+        return res.status(403).json({ error: 'Access denied. Only super-admin can create users.' });
+    }
 
     const { id, name, email, password, roll } = req.query
     if (id && name && email && password && roll) {
@@ -20,10 +21,10 @@ const createUser = (req, res) => {
 }
 
 const editUser = (req, res) => {
-    // const authenticatedUser = req.user;
-    // if (authenticatedUser.role !== 'super-admin') {
-    //     return res.status(403).json({ error: 'Access denied. Only super-admin can create users.' });
-    // }
+    const authenticatedUser = req.auth;
+    if (authenticatedUser.role !== 'super-admin') {
+        return res.status(403).json({ error: 'Access denied. Only super-admin can create users.' });
+    }
 
     // Extract user ID from the route parameters
     const userId = req.params.id;
@@ -42,10 +43,10 @@ const editUser = (req, res) => {
 
 
 const deletUser = (req, res) => {
-    // const authenticatedUser = req.user;
-    // if (authenticatedUser.role !== 'super-admin') {
-    //     return res.status(403).json({ error: 'Access denied. Only super-admin can create users.' });
-    // }
+    const authenticatedUser = req.auth;
+    if (authenticatedUser.role !== 'super-admin') {
+        return res.status(403).json({ error: 'Access denied. Only super-admin can create users.' });
+    }
 
     // Extract user ID from the route parameters
     const userId = req.params.id;
@@ -60,15 +61,6 @@ const deletUser = (req, res) => {
     });
 }
 
-const userLogin = (req, res) => {
-    const { name, id } = req.query
-    const username = { name: name, id: id }
-    const accesstoken = jwt.sign(username, process.env.ACCESS_TOKEN_KEY)
-    if (accesstoken) {
-        return res.status(200).json({ accesstoken: accesstoken })
-    }
-}
-
 const getAllUser = (req, res) => {
     console.log(req.user)
     db.all(`SELECT * FROM users`, (err, row) => {
@@ -79,4 +71,4 @@ const getAllUser = (req, res) => {
 
 
 
-module.exports = { createUser, getAllUser, userLogin, editUser, deletUser }
+module.exports = { createUser, getAllUser, editUser, deletUser }

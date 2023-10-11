@@ -1,17 +1,17 @@
 const db = require("../db")
 const jwt = require('jsonwebtoken');
 
+//super admin or admin can create user
 const createUser = (req, res) => {
-
     const authenticatedUser = req.auth;
     console.log("authenticatedUser", authenticatedUser)
-    if (authenticatedUser.roll !== 'super-admin') {
-        return res.status(403).json({ error: 'Access denied. Only super-admin can create users.' });
+    if (authenticatedUser.role !== 'super-admin' && authenticatedUser.role !== 'admin') {
+        return res.status(403).json({ error: 'Access denied. Only super-admin or admin can create users.' });
     }
 
-    const { id, name, email, password, roll } = req.query
-    if (id && name && email && password && roll) {
-        db.run(`INSERT INTO users (id,name, roll, email, password) VALUES (?,?,?,?,?)`, [id, name, roll, email, password], (err) => {
+    const { id, name, email, password, role } = req.query
+    if (id && name && email && password && role) {
+        db.run(`INSERT INTO users (id,name, role, email, password) VALUES (?,?,?,?,?)`, [id, name, role, email, password], (err) => {
             if (err) return res.status(401).json({ msg: "DB insert failed", err: err })
             return res.status(200).json({ msg: "DB insert Success", UserId: id })
         });
@@ -29,10 +29,10 @@ const editUser = (req, res) => {
     // Extract user ID from the route parameters
     const userId = req.params.id;
     console.log(userId)
-    const { name, email, password, roll } = req.query
+    const { name, email, password, role } = req.query
 
-    if (userId && name && email && password && roll) {
-        db.run(`UPDATE users SET name=?, email=?, password=?, roll=? WHERE id=?`, [name, email, password, roll, userId], (err) => {
+    if (userId && name && email && password && role) {
+        db.run(`UPDATE users SET name=?, email=?, password=?, role=? WHERE id=?`, [name, email, password, role, userId], (err) => {
             if (err) return res.status(501).json({ msg: "DB insert failed", err: err })
             return res.status(201).json("DB Edit Success")
         });
@@ -42,10 +42,11 @@ const editUser = (req, res) => {
 }
 
 
+//super admin or admin can delete user
 const deletUser = (req, res) => {
     const authenticatedUser = req.auth;
-    if (authenticatedUser.role !== 'super-admin') {
-        return res.status(403).json({ error: 'Access denied. Only super-admin can create users.' });
+    if (authenticatedUser.role !== 'super-admin' && authenticatedUser.role !== 'admin') {
+        return res.status(403).json({ error: 'Access denied. Only super-admin can delete users.' });
     }
 
     // Extract user ID from the route parameters

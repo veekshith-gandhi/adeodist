@@ -12,7 +12,7 @@ const userLogin = (req, res) => {
             return res.status(401).json({ message: 'Unauthorized' });
         }
         console.log("user", user)
-        const token = jwt.sign({ id: user.id, roll: user.roll }, process.env.ACCESS_TOKEN_KEY);
+        const token = jwt.sign({ id: user.id, role: user.role }, process.env.ACCESS_TOKEN_KEY);
         if (token) {
             return res.status(200).json({ accesstoken: token })
         }

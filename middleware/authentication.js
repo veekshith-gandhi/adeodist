@@ -8,6 +8,8 @@ const authenticateToken = (req, res, next) => {
     }
     jwt.verify(token, process.env.ACCESS_TOKEN_KEY, (err, data) => {
         console.log("authdata", data)
+        console.log("authdata", req.query)
+
         if (err) return res.status(403).json({ message: 'Forbidden' });
         req.auth = data;
     })

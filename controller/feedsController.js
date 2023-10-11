@@ -98,15 +98,63 @@ const getFeed = (req, res) => {
 
 }
 
-const getAllFeed = (req, res) => {
+//admin provide feed access
+const feedAccess = (req, res) => {
 
-    db.all('SELECT * FROM feed', (err, feeds) => {
-        if (err) {
-            return res.status(500).json({ error: 'Failed to retrieve feeds' });
-        }
-        res.status(200).json(feeds);
-    });
+    if (req.auth.role !== 'admin') {
+        return res.status(403).json({ message: 'Permission denied.' });
+    }
+
+    const { userid, feedid, candelete } = req.query;
+    console.log(req.query)
+    // Validate that the user making this request is an Admin
+    if (req.auth.role === 'admin') {
+        // Insert the access control entry
+        db.run('INSERT INTO AccessControl (userId, feedId, canDelete) VALUES (?, ?, ?)', [userid, feedid, candelete], (err) => {
+            if (err) {
+                res.status(400).send('Access control creation failed.');
+            } else {
+                res.status(201).send('Access control created successfully.');
+            }
+        });
+    } else {
+        res.status(403).send('Access denied. You are not an Admin.');
+    }
+
+}
+const getAllFeed = (req, res) => {
+    const userRole = req.auth.role;
+    const userId = req.auth.id;
+
+    if (userRole === 'super-admin') {
+        // Super Admin has access to all feeds
+        db.all('SELECT * FROM Feed', (err, feeds) => {
+            if (err) {
+                res.status(500).send('Internal Server Error.');
+            } else {
+                res.json({ data: feeds });
+            }
+        });
+    } else if (userRole === 'admin') {
+        // Admin can access feeds they have access to
+        db.all('SELECT f.* FROM feed f JOIN AccessControl ac ON f.id = ac.feedId WHERE ac.userId = ?', [userId], (err, feeds) => {
+            if (err) {
+                res.status(500).send('Internal Server Error.');
+            } else {
+                res.json(feeds);
+            }
+        });
+    } else if (userRole === 'basic') {
+        // Basic users can only read feeds they have access to
+        db.all('SELECT f.* FROM Feed f JOIN AccessControl ac ON f.id = ac.feedId WHERE ac.userId = ? AND ac.canDelete = 0', [userId], (err, feeds) => {
+            if (err) {
+                res.status(500).send('Internal Server Error.');
+            } else {
+                res.json(feeds);
+            }
+        });
+    }
 
 }
 
-module.exports = { createFeed, editFeed, deletFeed, getFeed, getAllFeed }
+module.exports = { createFeed, editFeed, deletFeed, getFeed, getAllFeed, feedAccess }

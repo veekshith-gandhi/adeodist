@@ -1,0 +1,53 @@
+
+# Project Title
+
+Adeodist Assignment
+
+#Table of Contents
+
+- Prerequisites
+- Getting Started
+- Setting up the Database
+- Installing Dependencies
+- Running the Application
+- RESTful APIs
+
+#Prerequisites
+
+List the prerequisites for running your project, including any software, tools, or knowledge required. For example:
+
+- Node.js installed
+- npm package manager
+- Basic knowledge of Node.js and Express
+- SQLite database management skills
+
+# Getting Started
+Explain the steps to set up and run the project on a local machine.
+
+# Setting up the Database
+
+- Create a directory for your SQLite database.
+- In your project directory, open the SQLite database using the following command:
+  ## sqlite3 database.sqlite
+
+# Installing Dependencies
+
+- npm install
+
+# Running the Application
+
+ -npm Started
+
+# RESTful APIs
+
+- Access the token  : localhost:8000/api/login?name=veekshith&id=1
+- Access the feed   : localhost:8000/api/feed?id=6
+- Delete feed       : localhost:8000/api/feed/1
+- Edit feed : /api/feed/2?name=rahul&url=ww.r.com&description=yes!
+- Post feed: /api/feed?name=tenis&url=www.cricket&description=sports like&id=4 
+- Delet user: /api/user/2
+- Edit user: /api/user/89?name=veek&roll=user&email=veekshith@gmail.com&password=12345
+- Cretae user: /api/user?name=rajpyo&role=admin&email=raju@gmail.com&password=12345&id=8
+- Get Controled feed based on the role handled in token: /api/access-controll
+- feed access given by admin : /api/feed-access?userid=2&feedid=1&candelete=false
+- log access : /api/logs
